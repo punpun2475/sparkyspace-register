@@ -333,7 +333,8 @@
                 const adminPassword = ref('');
                 const adminData = ref([]);
 
-                const API_URL = 'https://script.google.com/macros/s/AKfycbzeRoejIvAWZnA4uPdV_43eGuxhWyve6TpVkh3lAU7v_0iJ8Qwplxl7mPSre4x2BlPD/exec';
+                // ⚠️ อย่าลืมนำลิงก์ Web App (ตัวใหม่ที่ได้จากการ Deploy ชีตใหม่) มาวางแทนที่ตรงนี้ครับ!
+                const API_URL = 'https://script.google.com/macros/s/AKfycbyztizTFp6ohRzTGoFngTZCXHdeTIehk93ejAZbSbTHMNvwkJn_nKcVIRNJb6qwpxxO/exec';
 
                 onMounted(() => {
                     fetch(API_URL + '?action=getCourses')
@@ -375,6 +376,7 @@
                     isSubmitting.value = true;
                     const payload = {
                         courseName: selectedCourse.value.title,
+                        price: selectedCourse.value.price,
                         parentFirstName: formData.parentFirstName,
                         parentLastName: formData.parentLastName,
                         email: formData.email,
