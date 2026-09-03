@@ -245,13 +245,13 @@
             </div>
         </main>
 
-        <!-- View: Admin Dashboard -->
+        <!-- View: Admin Dashboard (หลังบ้านแบบแสดงข้อมูลครบถ้วนทุกช่อง) -->
         <main v-if="currentView === 'admin'" class="min-h-screen bg-gray-100">
             <header class="bg-gray-900 text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-30">
                 <div class="font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> System Admin Dashboard</div>
                 <button @click="setView('home'); isAdminAuthenticated = false" class="text-sm hover:text-gray-300 flex items-center gap-1"><i class="fa-solid fa-house"></i> กลับหน้าร้าน</button>
             </header>
-            <div class="p-6 max-w-7xl mx-auto">
+            <div class="p-6 max-w-[95%] mx-auto">
                 <div v-if="!isAdminAuthenticated" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md mt-10">
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-lock text-3xl"></i></div>
@@ -269,35 +269,45 @@
                 </div>
                 <div v-else>
                     <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-bold text-gray-800">รายชื่อผู้สมัครล่าสุด</h1>
-                        <button @click="handleAdminLogin" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+                        <h1 class="text-2xl font-bold text-gray-800">รายชื่อผู้สมัครทั้งหมด</h1>
+                        <button @click="handleAdminLogin" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50 shadow-sm"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
                     </div>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
                         <table class="w-full text-sm text-left whitespace-nowrap">
-                            <thead class="text-xs text-gray-600 uppercase bg-gray-50 border-b border-gray-200">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200">
                                 <tr>
-                                    <th class="px-6 py-4 font-bold">วันที่-เวลา</th>
-                                    <th class="px-6 py-4 font-bold">คอร์สที่สมัคร</th>
-                                    <th class="px-6 py-4 font-bold">ชื่อน้อง (ผู้เรียน)</th>
-                                    <th class="px-6 py-4 font-bold">ผู้ปกครอง</th>
-                                    <th class="px-6 py-4 font-bold">เบอร์โทร</th>
-                                    <th class="px-6 py-4 font-bold text-center">สลิปโอนเงิน</th>
+                                    <th class="px-4 py-3.5 font-bold">Timestamp</th>
+                                    <th class="px-4 py-3.5 font-bold">CourseName</th>
+                                    <th class="px-4 py-3.5 font-bold">ParentFirstName</th>
+                                    <th class="px-4 py-3.5 font-bold">ParentLastName</th>
+                                    <th class="px-4 py-3.5 font-bold">Email</th>
+                                    <th class="px-4 py-3.5 font-bold">Phone</th>
+                                    <th class="px-4 py-3.5 font-bold">StudentFullName</th>
+                                    <th class="px-4 py-3.5 font-bold text-center">ChildAge</th>
+                                    <th class="px-4 py-3.5 font-bold">StudentClass</th>
+                                    <th class="px-4 py-3.5 font-bold">SchoolName</th>
+                                    <th class="px-4 py-3.5 font-bold text-center">SlipURL</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                                 <tr v-for="(row, idx) in adminData" :key="idx" class="hover:bg-blue-50/50 transition">
-                                    <td class="px-6 py-4 text-gray-500">{{ row['Timestamp'] || '-' }}</td>
-                                    <td class="px-6 py-4 font-bold text-gray-800">{{ row['CourseName'] || '-' }}</td>
-                                    <td class="px-6 py-4 font-medium text-blue-600">{{ row['StudentFullName'] || '-' }}</td>
-                                    <td class="px-6 py-4">{{ (row['ParentFirstName'] || '') + ' ' + (row['ParentLastName'] || '') }}</td>
-                                    <td class="px-6 py-4">{{ row['Phone'] || '-' }}</td>
-                                    <td class="px-6 py-4 text-center">
-                                        <a v-if="row['SlipURL']" :href="row['SlipURL']" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-blue-100 transition"><i class="fa-solid fa-image"></i> ดูสลิป</a>
+                                    <td class="px-4 py-3 text-gray-500 text-xs">{{ row['Timestamp'] || '-' }}</td>
+                                    <td class="px-4 py-3 font-bold text-gray-800">{{ row['CourseName'] || '-' }}</td>
+                                    <td class="px-4 py-3">{{ row['ParentFirstName'] || '-' }}</td>
+                                    <td class="px-4 py-3">{{ row['ParentLastName'] || '-' }}</td>
+                                    <td class="px-4 py-3 text-gray-600">{{ row['Email'] || '-' }}</td>
+                                    <td class="px-4 py-3">{{ row['Phone'] || '-' }}</td>
+                                    <td class="px-4 py-3 font-medium text-blue-600">{{ row['StudentFullName'] || '-' }}</td>
+                                    <td class="px-4 py-3 text-center">{{ row['ChildAge'] || '-' }}</td>
+                                    <td class="px-4 py-3">{{ row['StudentClass'] || '-' }}</td>
+                                    <td class="px-4 py-3">{{ row['SchoolName'] || '-' }}</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <a v-if="row['SlipURL']" :href="row['SlipURL']" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-blue-100 transition inline-flex items-center gap-1 shadow-xs"><i class="fa-solid fa-image"></i> ดูสลิป</a>
                                         <span v-else class="text-gray-400">-</span>
                                     </td>
                                 </tr>
                                 <tr v-if="adminData.length === 0">
-                                    <td colspan="6" class="text-center py-12 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300 block"></i>ยังไม่มีข้อมูลผู้สมัครในระบบ</td>
+                                    <td colspan="11" class="text-center py-12 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300 block"></i>ยังไม่มีข้อมูลผู้สมัครในระบบ</td>
                                 </tr>
                             </tbody>
                         </table>
