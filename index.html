@@ -93,22 +93,41 @@
             </footer>
         </main>
 
-        <!-- Modal Details -->
+      <!-- Modal Details -->
         <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
                 <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
-                    <h2 class="text-xl font-bold flex items-center gap-2 text-gray-800"><i class="fa-solid fa-circle-info text-orange-500"></i> รายละเอียดคอร์ส</h2>
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-gray-800">
+                        <i class="fa-solid fa-circle-info text-orange-500"></i> รายละเอียดคอร์ส
+                    </h2>
                     <button @click="showModal = false" class="p-2 hover:bg-gray-200 rounded-full transition text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
+
                 <div class="p-6 overflow-y-auto flex-1">
                     <h2 class="text-2xl font-extrabold text-gray-900 mb-2">{{ selectedCourse.title }}</h2>
                     <p class="text-gray-600 mb-6">{{ selectedCourse.subtitle || selectedCourse.description || '' }}</p>
+
                     <div class="bg-blue-50 text-center py-6 rounded-xl border border-blue-100 mb-8">
                         <div class="flex justify-center items-end gap-2 mb-1">
                             <span class="text-4xl font-extrabold text-blue-600">฿{{ selectedCourse.price }}</span>
+                            <span v-if="selectedCourse.originalPrice" class="text-lg text-gray-400 line-through mb-1">฿{{ selectedCourse.originalPrice }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- ส่วนข้อมูลพื้นฐาน (ดึงกลับมาให้ครบ) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-list text-blue-500"></i> ข้อมูลพื้นฐาน</h3>
+                            <ul class="space-y-3 text-sm text-gray-700 mb-8">
+                                <li class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>ระยะเวลา:</span> <span class="font-bold">{{ selectedCourse.duration || '-' }}</span></li>
+                                <li class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>วันที่เรียน:</span> <span class="font-bold">{{ selectedCourse.date || '-' }}</span></li>
+                                <li class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>เวลา:</span> <span class="font-bold">{{ selectedCourse.time || '-' }}</span></li>
+                                <li class="flex justify-between items-center bg-orange-50 p-2 rounded text-orange-700"><span>ที่นั่งคงเหลือ:</span> <span class="font-bold">{{ selectedCourse.spotsLeft || 'ไม่จำกัด' }}</span></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
+
                 <div class="p-4 border-t bg-white rounded-b-2xl flex gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10">
                     <button @click="showModal = false" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">ปิด</button>
                     <button @click="proceedToCheckout" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
