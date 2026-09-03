@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky Space ลานสนุกคิด - คอร์สเรียนออนไลน์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #F8FAFC; }
+        [v-cloak] { display: none !important; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 24px; height: 24px; border-radius: 50%; border-left-color: #ffffff; animation: spin 1s linear infinite; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #f97316; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-gray-800 antialiased selection:bg-orange-200">
+    <div id="app" v-cloak>
+        
+        <!-- Header (แสดงหน้าร้านปกติ) -->
+        <header v-if="currentView !== 'admin'" class="bg-white border-b sticky top-0 z-40 shadow-sm">
+            <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold text-xl text-orange-600 cursor-pointer" @click="setView('home')">
+                    <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                    <span>Sparky Space ลานสนุกคิด</span>
+                </div>
+                <div class="hidden md:flex gap-6 text-sm text-gray-600">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-phone"></i> 096-971-2098</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-envelope"></i> hello@sparkyspace.com</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- View: หน้าแรก -->
+        <main v-if="currentView === 'home'" class="bg-orange-50 min-h-screen pb-12 flex flex-col">
+            <div class="bg-orange-600 text-white py-16 px-4 text-center">
+                <div class="max-w-3xl mx-auto flex flex-col items-center">
+                    <div class="bg-white text-orange-600 p-4 rounded-full mb-4 shadow-md">
+                        <i class="fa-solid fa-wand-magic-sparkles text-3xl"></i>
+                    </div>
+                    <h1 class="text-3xl md:text-5xl font-extrabold mb-4">Sparky Space ลานสนุกคิด</h1>
+                    <p class="text-lg md:text-xl text-orange-100 mb-8">เปลี่ยนเวลาว่าง ให้เป็นประสบการณ์ที่ลูกจะจดจำ สนุก ได้ความรู้ และลงมือทำจริง!</p>
+                </div>
+            </div>
+
+            <div class="max-w-5xl mx-auto px-4 mt-8 flex-1 w-full">
+                <div class="flex items-center gap-2 mb-6 text-xl font-bold text-gray-800">
+                    <i class="fa-solid fa-book-open text-orange-500"></i> เลือกคอร์สเรียนทั้งหมด
+                </div>
+
+                <div v-if="isLoading" class="text-center py-20">
+                    <div class="loader mb-4"></div>
+                    <p class="text-orange-600 font-bold text-lg">กำลังดึงข้อมูลจาก Google Sheet...</p>
+                </div>
+
+                <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div v-for="course in courses" :key="course.id" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col">
+                        <div class="aspect-[4/5] overflow-hidden relative bg-gray-100">
+                            <img v-if="course.image" :src="course.image" :alt="course.title" class="w-full h-full object-cover object-top" />
+                            <div v-else class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-regular fa-image text-5xl"></i></div>
+                            <div class="absolute top-3 right-3 bg-white/95 backdrop-blur text-orange-600 font-bold px-3 py-1 rounded-full text-sm shadow-sm border border-orange-100">
+                                ฿{{ course.price }}
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h3 class="text-lg font-bold text-gray-800 mb-1">{{ course.title }}</h3>
+                            <p class="text-sm text-gray-500 mb-4 line-clamp-2 h-10">{{ course.subtitle || course.description || '' }}</p>
+                            
+                            <div class="space-y-2 mb-6 mt-auto">
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fa-regular fa-clock text-gray-400"></i> {{ course.duration || 'ไม่ระบุเวลา' }}</div>
+                                <div v-if="course.date || course.spotsLeft" class="flex items-center justify-between text-sm text-gray-600">
+                                    <div class="flex items-center gap-2" v-if="course.date"><i class="fa-regular fa-calendar text-gray-400"></i> เริ่ม {{ course.date }}</div>
+                                    <span v-if="course.spotsLeft" class="text-orange-500 font-medium bg-orange-50 px-2 py-0.5 rounded text-xs">{{ course.spotsLeft }}</span>
+                                </div>
+                            </div>
+                            
+                            <button @click="openCourseDetails(course)" class="w-full bg-orange-50 text-orange-600 font-bold py-3 rounded-xl border border-orange-200 hover:bg-orange-100 transition shadow-sm">
+                                ดูรายละเอียดคอร์ส
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="bg-white border-t mt-12 py-6 text-center text-sm text-gray-400 flex flex-col items-center gap-2">
+                <p>&copy; 2026 Sparky Space. All rights reserved.</p>
+                <!-- ปุ่มเข้าหลังบ้าน (กุญแจ) -->
+                <button @click="setView('admin')" class="text-gray-300 hover:text-gray-500 transition" title="ระบบจัดการหลังบ้าน"><i class="fa-solid fa-lock"></i></button>
+            </footer>
+        </main>
+
+        <!-- Modal Details -->
+        <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-gray-800"><i class="fa-solid fa-circle-info text-orange-500"></i> รายละเอียดคอร์ส</h2>
+                    <button @click="showModal = false" class="p-2 hover:bg-gray-200 rounded-full transition text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div class="p-6 overflow-y-auto flex-1">
+                    <h2 class="text-2xl font-extrabold text-gray-900 mb-2">{{ selectedCourse.title }}</h2>
+                    <p class="text-gray-600 mb-6">{{ selectedCourse.subtitle || selectedCourse.description || '' }}</p>
+                    <div class="bg-blue-50 text-center py-6 rounded-xl border border-blue-100 mb-8">
+                        <div class="flex justify-center items-end gap-2 mb-1">
+                            <span class="text-4xl font-extrabold text-blue-600">฿{{ selectedCourse.price }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t bg-white rounded-b-2xl flex gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10">
+                    <button @click="showModal = false" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">ปิด</button>
+                    <button @click="proceedToCheckout" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
+                        สมัครเรียนคอร์สนี้ <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <main v-if="currentView === 'checkout'" class="bg-slate-50 min-h-screen pb-12 pt-6">
+            <div class="max-w-3xl mx-auto px-4">
+                <button @click="setView('home')" class="text-gray-500 hover:text-gray-800 mb-6 flex items-center gap-1 text-sm font-medium bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-200 w-fit transition">
+                    <i class="fa-solid fa-arrow-left"></i> กลับหน้ารายการคอร์ส
+                </button>
+                <form @submit.prevent="handleSubmit" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 md:p-8 space-y-8">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-4 border-b pb-2"><i class="fa-solid fa-users text-orange-500"></i> ข้อมูลผู้ติดต่อ (ผู้ปกครอง)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div><label class="block text-sm font-bold text-gray-700 mb-1.5">ชื่อ *</label><input v-model="formData.parentFirstName" required type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                                <div><label class="block text-sm font-bold text-gray-700 mb-1.5">นามสกุล *</label><input v-model="formData.parentLastName" required type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                                <div><label class="block text-sm font-bold text-gray-700 mb-1.5">อีเมล *</label><input v-model="formData.email" required type="email" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                                <div><label class="block text-sm font-bold text-gray-700 mb-1.5">เบอร์โทรศัพท์ *</label><input v-model="formData.phone" required type="tel" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-4 border-b pb-2"><i class="fa-solid fa-graduation-cap text-orange-500"></i> ข้อมูลผู้เรียน (นักเรียน/น้อง)</h3>
+                            <div class="space-y-5">
+                                <div><label class="block text-sm font-bold text-gray-700 mb-1.5">ชื่อ - นามสกุล (น้องที่มาเรียน) *</label><input v-model="formData.studentFullName" required type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div><label class="block text-sm font-bold text-gray-700 mb-1.5">อายุ (ปี) *</label><input v-model="formData.childAge" required type="number" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                                    <div><label class="block text-sm font-bold text-gray-700 mb-1.5">โรงเรียน</label><input v-model="formData.schoolName" type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="bg-slate-800 p-6 md:p-8 text-white relative overflow-hidden">
+                        <h3 class="font-bold text-xl mb-6"><i class="fa-regular fa-credit-card text-yellow-400"></i> ข้อมูลการชำระเงิน</h3>
+                        <div class="bg-slate-700/50 p-5 rounded-xl border border-slate-600 mb-6">
+                            <div class="text-sm text-slate-300 font-medium mb-3 uppercase tracking-wide">โอนเงินเข้าบัญชี</div>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xs">KBANK</div> <span class="text-lg">ธนาคารกสิกรไทย</span></div>
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-hashtag text-slate-400"></i> <span class="font-mono text-xl tracking-wider text-yellow-300">123-4-56789-0</span></div>
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-user text-slate-400"></i> <span>บริษัท สปาร์คกี้ คิดส์ จำกัด</span></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-700">
+                            <div class="text-slate-300">ยอดชำระสุทธิ (คอร์ส {{ selectedCourse?.title }})</div>
+                            <div class="text-3xl font-extrabold text-white">฿{{ selectedCourse?.price }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-200 mb-3">แนบหลักฐานการโอนเงิน (สลิป) *</label>
+                            <input required type="file" accept="image/*" @change="handleFileChange" class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white" />
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t border-gray-200">
+                        <button type="submit" :disabled="isSubmitting || !slipFileName" :class="['w-full py-4 text-white font-bold rounded-xl text-lg transition shadow-lg flex items-center justify-center gap-2', isSubmitting ? 'bg-blue-400 cursor-wait' : (!slipFileName ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700')]">
+                            <div v-if="isSubmitting" class="spinner"></div> 
+                            <span v-if="isSubmitting">กำลังส่งข้อมูลและอัปโหลดสลิป...</span>
+                            <span v-else>ยืนยันการสมัครและส่งสลิปโอนเงิน</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- View: Success -->
+        <main v-if="currentView === 'success'" class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 max-w-lg w-full text-center border-t-8 border-green-500">
+                <div class="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 relative"><i class="fa-solid fa-check text-4xl"></i></div>
+                <h2 class="text-3xl font-extrabold text-gray-800 mb-4">ส่งข้อมูลสำเร็จ!</h2>
+                <div class="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-100">
+                    <p class="text-gray-600">เราได้รับข้อมูลและสลิปโอนเงินคอร์ส <br/><strong class="text-orange-600 block mt-2 text-lg">"{{ selectedCourse?.title }}"</strong></p>
+                </div>
+                <button @click="resetApp()" class="bg-gray-900 text-white font-bold py-3.5 px-8 rounded-xl hover:bg-black transition w-full shadow-md">กลับสู่หน้าหลัก</button>
+            </div>
+        </main>
+
+        <!-- View: Admin Dashboard (หลังบ้าน) -->
+        <main v-if="currentView === 'admin'" class="min-h-screen bg-gray-100">
+            <header class="bg-gray-900 text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-30">
+                <div class="font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> System Admin Dashboard</div>
+                <button @click="setView('home'); isAdminAuthenticated = false" class="text-sm hover:text-gray-300 flex items-center gap-1"><i class="fa-solid fa-house"></i> กลับหน้าร้าน</button>
+            </header>
+
+            <div class="p-6 max-w-7xl mx-auto">
+                <!-- ส่วนล็อกอินแอดมิน -->
+                <div v-if="!isAdminAuthenticated" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md mt-10">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-lock text-3xl"></i></div>
+                        <h2 class="text-2xl font-bold">เข้าสู่ระบบหลังบ้าน</h2>
+                        <p class="text-sm text-gray-500 mt-1">กรุณายืนยันตัวตน (รหัสผ่าน: admin123)</p>
+                    </div>
+                    <form @submit.prevent="handleAdminLogin" class="space-y-4">
+                        <input type="password" v-model="adminPassword" placeholder="รหัสผ่าน" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+                        <button type="submit" :disabled="isAdminLoading" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                            <div v-if="isAdminLoading" class="spinner"></div> 
+                            <span v-if="isAdminLoading">กำลังโหลดข้อมูล...</span>
+                            <span v-else>เข้าสู่ระบบ</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ส่วนแสดงตารางข้อมูลคนสมัครจริง -->
+                <div v-else>
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">รายชื่อผู้สมัครล่าสุด</h1>
+                        <button @click="handleAdminLogin" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
+                        <table class="w-full text-sm text-left whitespace-nowrap">
+                            <thead class="text-xs text-gray-600 uppercase bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold">วันที่-เวลา</th>
+                                    <th class="px-6 py-4 font-bold">คอร์สที่สมัคร</th>
+                                    <th class="px-6 py-4 font-bold">ชื่อน้อง (ผู้เรียน)</th>
+                                    <th class="px-6 py-4 font-bold">ผู้ปกครอง</th>
+                                    <th class="px-6 py-4 font-bold">เบอร์โทร</th>
+                                    <th class="px-6 py-4 font-bold text-center">สลิปโอนเงิน</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr v-for="(row, idx) in adminData" :key="idx" class="hover:bg-blue-50/50 transition">
+                                    <td class="px-6 py-4 text-gray-500">{{ row['วันที่-เวลา'] || '-' }}</td>
+                                    <td class="px-6 py-4 font-bold text-gray-800">{{ row['คอร์สที่สมัคร'] || '-' }}</td>
+                                    <td class="px-6 py-4 font-medium text-blue-600">{{ row['ชื่อน้อง'] || '-' }}</td>
+                                    <td class="px-6 py-4">{{ row['ชื่อผู้ปกครอง'] || '-' }}</td>
+                                    <td class="px-6 py-4">{{ row['เบอร์โทร'] || '-' }}</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <a v-if="row['ลิงก์สลิปโอนเงิน']" :href="row['ลิงก์สลิปโอนเงิน']" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-blue-100 transition"><i class="fa-solid fa-image"></i> ดูสลิป</a>
+                                        <span v-else class="text-gray-400">-</span>
+                                    </td>
+                                </tr>
+                                <tr v-if="adminData.length === 0">
+                                    <td colspan="6" class="text-center py-12 text-gray-500">
+                                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300 block"></i>
+                                        ยังไม่มีข้อมูลผู้สมัครในระบบ
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const { createApp, ref, reactive, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const currentView = ref('home');
+                const courses = ref([]); 
+                const isLoading = ref(true); 
+                const selectedCourse = ref(null);
+                const showModal = ref(false);
+                const isSubmitting = ref(false);
+                
+                const slipFileName = ref('');
+                const slipMimeType = ref('');
+                const slipBase64 = ref('');
+
+                const formData = reactive({
+                    parentFirstName: '', parentLastName: '', email: '', phone: '',
+                    studentFullName: '', childAge: '', schoolName: ''
+                });
+
+                // ตัวแปรส่วนแอดมิน
+                const isAdminAuthenticated = ref(false);
+                const isAdminLoading = ref(false);
+                const adminPassword = ref('');
+                const adminData = ref([]);
+
+                // ลิงก์ API Google Apps Script 
+                const API_URL = 'https://script.google.com/macros/s/AKfycbzeRoejIvAWZnA4uPdV_43eGuxhWyve6TpVkh3lAU7v_0iJ8Qwplxl7mPSre4x2BlPD/exec';
+
+                onMounted(() => {
+                    fetch(API_URL + '?action=getCourses')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result === 'success' && data.data) {
+                                courses.value = data.data; 
+                            }
+                            isLoading.value = false;
+                        })
+                        .catch(() => {
+                            isLoading.value = false;
+                        });
+                });
+
+                const setView = (view) => { currentView.value = view; window.scrollTo(0,0); };
+                const openCourseDetails = (course) => { selectedCourse.value = course; showModal.value = true; };
+                const proceedToCheckout = () => { showModal.value = false; setView('checkout'); };
+
+                const handleFileChange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('ไฟล์มีขนาดใหญ่เกิน 5MB กรุณาเลือกไฟล์ที่เล็กลง'); e.target.value = null; return;
+                        }
+                        slipFileName.value = file.name;
+                        slipMimeType.value = file.type;
+                        
+                        const reader = new FileReader();
+                        reader.onload = (event) => { slipBase64.value = event.target.result.split(',')[1]; };
+                        reader.readAsDataURL(file);
+                    }
+                };
+
+                const handleSubmit = () => {
+                    if (!slipFileName.value || !slipBase64.value) { 
+                        alert('กำลังประมวลผลไฟล์สลิป กรุณารอสักครู่แล้วกดส่งอีกครั้ง'); return; 
+                    }
+                    isSubmitting.value = true;
+                    const payload = {
+                        courseName: selectedCourse.value.title,
+                        parentFirstName: formData.parentFirstName,
+                        parentLastName: formData.parentLastName,
+                        email: formData.email,
+                        phone: formData.phone,
+                        studentFullName: formData.studentFullName,
+                        childAge: formData.childAge,
+                        schoolName: formData.schoolName || '-',
+                        slipFileName: slipFileName.value,
+                        slipMimeType: slipMimeType.value,
+                        slipBase64: slipBase64.value
+                    };
+
+                    fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) })
+                    .then(response => response.json())
+                    .then(data => {
+                        isSubmitting.value = false;
+                        if (data.result === 'success') { setView('success'); } 
+                        else { alert('เกิดข้อผิดพลาด: ' + data.error); }
+                    })
+                    .catch(error => {
+                        isSubmitting.value = false;
+                        alert('ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
+                    });
+                };
+
+                const resetApp = () => {
+                    setView('home'); selectedCourse.value = null; slipFileName.value = ''; slipBase64.value = '';
+                    Object.keys(formData).forEach(key => formData[key] = '');
+                };
+
+                // ฟังก์ชันล็อกอินและดึงข้อมูลหลังบ้านสำหรับ Admin
+                const handleAdminLogin = () => {
+                    if (!adminPassword.value) { alert('กรุณากรอกรหัสผ่าน'); return; }
+                    isAdminLoading.value = true;
+                    
+                    fetch(API_URL + '?action=getAdminData&password=' + adminPassword.value)
+                    .then(response => response.json())
+                    .then(data => {
+                        isAdminLoading.value = false;
+                        if (data.result === 'success') {
+                            isAdminAuthenticated.value = true;
+                            adminData.value = data.data; // เอาข้อมูลจาก Sheet มาใส่ตาราง
+                        } else {
+                            alert('เข้าสู่ระบบไม่สำเร็จ: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        isAdminLoading.value = false;
+                        alert('ไม่สามารถเชื่อมต่อระบบหลังบ้านได้ กรุณาลองใหม่อีกครั้ง');
+                    });
+                };
+
+                return {
+                    currentView, courses, isLoading, selectedCourse, showModal, isSubmitting, slipFileName, formData,
+                    isAdminAuthenticated, isAdminLoading, adminPassword, adminData,
+                    setView, openCourseDetails, proceedToCheckout, handleFileChange, handleSubmit, resetApp, handleAdminLogin
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
