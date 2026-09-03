@@ -21,7 +21,7 @@
 <body class="text-gray-800 antialiased selection:bg-orange-200">
     <div id="app" v-cloak>
         
-        <!-- Header (แสดงหน้าร้านปกติ) -->
+        <!-- Header -->
         <header v-if="currentView !== 'admin'" class="bg-white border-b sticky top-0 z-40 shadow-sm">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2 font-bold text-xl text-orange-600 cursor-pointer" @click="setView('home')">
@@ -35,7 +35,7 @@
             </div>
         </header>
 
-        <!-- View: หน้าแรก -->
+        <!-- View: Home -->
         <main v-if="currentView === 'home'" class="bg-orange-50 min-h-screen pb-12 flex flex-col">
             <div class="bg-orange-600 text-white py-16 px-4 text-center">
                 <div class="max-w-3xl mx-auto flex flex-col items-center">
@@ -88,29 +88,21 @@
             
             <footer class="bg-white border-t mt-12 py-6 text-center text-sm text-gray-400 flex flex-col items-center gap-2">
                 <p>&copy; 2026 Sparky Space. All rights reserved.</p>
-                <!-- ปุ่มเข้าหลังบ้าน (กุญแจ) -->
                 <button @click="setView('admin')" class="text-gray-300 hover:text-gray-500 transition" title="ระบบจัดการหลังบ้าน"><i class="fa-solid fa-lock"></i></button>
             </footer>
         </main>
 
-     <!-- Modal: หน้าต่างรายละเอียดคอร์ส (แบบสมบูรณ์เหมือนตัวอย่าง) -->
+        <!-- Modal: Course Details -->
         <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-                
                 <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
-                    <h2 class="text-xl font-bold flex items-center gap-2 text-gray-800">
-                        <i class="fa-solid fa-circle-info text-orange-500"></i> รายละเอียดคอร์ส
-                    </h2>
-                    <button @click="showModal = false" class="p-2 hover:bg-gray-200 rounded-full transition text-gray-500">
-                        <i class="fa-solid fa-xmark text-xl"></i>
-                    </button>
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-gray-800"><i class="fa-solid fa-circle-info text-orange-500"></i> รายละเอียดคอร์ส</h2>
+                    <button @click="showModal = false" class="p-2 hover:bg-gray-200 rounded-full transition text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
-
                 <div class="p-6 overflow-y-auto flex-1">
                     <h2 class="text-2xl font-extrabold text-gray-900 mb-1">{{ selectedCourse.title }}</h2>
                     <p class="text-gray-600 mb-6">{{ selectedCourse.subtitle || selectedCourse.description || '' }}</p>
 
-                    <!-- กล่องแสดงราคา -->
                     <div class="bg-blue-50 text-center py-5 rounded-xl border border-blue-100 mb-8">
                         <div class="flex justify-center items-end gap-3">
                             <span class="text-4xl font-extrabold text-blue-600">฿{{ selectedCourse.price }}</span>
@@ -119,13 +111,9 @@
                         </div>
                     </div>
 
-                    <!-- แบ่งเป็น 2 คอลัมน์ซ้ายขวา -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- คอลัมน์ซ้าย: ข้อมูลพื้นฐาน & จุดเด่น -->
                         <div>
-                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-                                <i class="fa-solid fa-list text-blue-500"></i> ข้อมูลพื้นฐาน
-                            </h3>
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-list text-blue-500"></i> ข้อมูลพื้นฐาน</h3>
                             <ul class="space-y-3 text-sm text-gray-700 mb-8">
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>ระยะเวลา:</span> <span class="font-bold">{{ selectedCourse.duration || '-' }}</span></li>
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>วันที่เรียน:</span> <span class="font-bold">{{ selectedCourse.date || '-' }}</span></li>
@@ -133,9 +121,7 @@
                                 <li class="flex justify-between items-center bg-orange-50 p-2.5 rounded-lg text-orange-700"><span>ที่นั่งคงเหลือ:</span> <span class="font-bold">{{ selectedCourse.spotsLeft || 'ไม่จำกัด' }}</span></li>
                             </ul>
 
-                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-                                <i class="fa-solid fa-star text-yellow-500"></i> จุดเด่นคอร์สนี้
-                            </h3>
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-star text-yellow-500"></i> จุดเด่นคอร์สนี้</h3>
                             <div class="space-y-2">
                                 <div v-for="(item, i) in (selectedCourse.highlights ? selectedCourse.highlights.split(',') : [])" :key="i" class="flex items-start gap-2 bg-green-50 p-2.5 rounded-lg text-green-800 text-sm">
                                     <i class="fa-solid fa-circle-check shrink-0 mt-0.5 text-green-600"></i> {{ item.trim() }}
@@ -143,20 +129,15 @@
                             </div>
                         </div>
 
-                        <!-- คอลัมน์ขวา: สิ่งที่จะได้เรียนรู้ & ประโยชน์ -->
                         <div>
-                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-                                <i class="fa-solid fa-book-open text-purple-500"></i> สิ่งที่จะได้เรียนรู้
-                            </h3>
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-book-open text-purple-500"></i> สิ่งที่จะได้เรียนรู้</h3>
                             <div class="space-y-2 mb-8">
                                 <div v-for="(item, i) in (selectedCourse.learnList ? selectedCourse.learnList.split(',') : [])" :key="i" class="flex items-start gap-2 text-sm text-gray-700 bg-purple-50/50 p-2.5 rounded-lg">
                                     <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0"></div> {{ item.trim() }}
                                 </div>
                             </div>
 
-                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-                                <i class="fa-solid fa-heart text-pink-500"></i> ประโยชน์ที่ได้รับ
-                            </h3>
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-heart text-pink-500"></i> ประโยชน์ที่ได้รับ</h3>
                             <div class="space-y-2">
                                 <div v-for="(item, i) in (selectedCourse.benefits ? selectedCourse.benefits.split(',') : [])" :key="i" class="flex items-start gap-2 text-sm text-gray-700 bg-pink-50/50 p-2.5 rounded-lg">
                                     <div class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 shrink-0"></div> {{ item.trim() }}
@@ -165,7 +146,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="p-4 border-t bg-white rounded-b-2xl flex gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10">
                     <button @click="showModal = false" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">ปิด</button>
                     <button @click="proceedToCheckout" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
@@ -175,27 +155,19 @@
             </div>
         </div>
 
-        <!-- Checkout Form -->
-       <!-- View: หน้าฟอร์มสมัครเรียนและชำระเงิน (แบบสมบูรณ์เหมือนตัวอย่าง) -->
+        <!-- View: Checkout Form -->
         <main v-if="currentView === 'checkout'" class="bg-slate-50 min-h-screen pb-12 pt-6">
             <div class="max-w-3xl mx-auto px-4">
                 <button @click="setView('home')" class="text-gray-500 hover:text-gray-800 mb-6 flex items-center gap-1 text-sm font-medium bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-200 w-fit transition">
                     <i class="fa-solid fa-arrow-left"></i> กลับหน้ารายการคอร์ส
                 </button>
-
                 <h2 class="text-2xl font-extrabold mb-6 text-gray-800 flex items-center gap-3">
-                    <div class="bg-orange-100 text-orange-500 p-2 rounded-lg"><i class="fa-regular fa-file-lines"></i></div>
-                    รายละเอียดการสมัคร
+                    <div class="bg-orange-100 text-orange-500 p-2 rounded-lg"><i class="fa-regular fa-file-lines"></i></div> รายละเอียดการสมัคร
                 </h2>
-
                 <form @submit.prevent="handleSubmit" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="p-6 md:p-8 space-y-8">
-                        
-                        <!-- ข้อมูลผู้ปกครอง -->
                         <div>
-                            <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-                                <i class="fa-solid fa-users text-orange-500"></i> ข้อมูลผู้ติดต่อ (ผู้ปกครอง)
-                            </h3>
+                            <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-users text-orange-500"></i> ข้อมูลผู้ติดต่อ (ผู้ปกครอง)</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div><label class="block text-sm font-bold text-gray-700 mb-1.5">ชื่อ *</label><input v-model="formData.parentFirstName" required type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500" /></div>
                                 <div><label class="block text-sm font-bold text-gray-700 mb-1.5">นามสกุล *</label><input v-model="formData.parentLastName" required type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500" /></div>
@@ -204,11 +176,8 @@
                             </div>
                         </div>
 
-                       <!-- ข้อมูลนักเรียน (แบบสมบูรณ์ มีช่องชั้น/ห้องเรียน) -->
                         <div>
-                            <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-                                <i class="fa-solid fa-graduation-cap text-orange-500"></i> ข้อมูลผู้เรียน (นักเรียน/น้อง)
-                            </h3>
+                            <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-graduation-cap text-orange-500"></i> ข้อมูลผู้เรียน (นักเรียน/น้อง)</h3>
                             <div class="space-y-5">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1.5">ชื่อ - นามสกุล (น้องที่มาเรียน) *</label>
@@ -230,12 +199,11 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                     <!-- Payment Section -->
                     <div class="bg-slate-800 p-6 md:p-8 text-white relative overflow-hidden">
-                        <h3 class="font-bold text-xl flex items-center gap-2 mb-6">
-                            <i class="fa-regular fa-credit-card text-yellow-400"></i> ข้อมูลการชำระเงิน
-                        </h3>
+                        <h3 class="font-bold text-xl flex items-center gap-2 mb-6"><i class="fa-regular fa-credit-card text-yellow-400"></i> ข้อมูลการชำระเงิน</h3>
                         <div class="bg-slate-700/50 p-5 rounded-xl border border-slate-600 mb-6 backdrop-blur-sm">
                             <div class="text-sm text-slate-300 font-medium mb-3 uppercase tracking-wide">โอนเงินเข้าบัญชี</div>
                             <div class="flex flex-col gap-3">
@@ -244,19 +212,16 @@
                                 <div class="flex items-center gap-3"><i class="fa-solid fa-user text-slate-400"></i> <span>บริษัท สปาร์คกี้ คิดส์ จำกัด</span></div>
                             </div>
                         </div>
-                        
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-700">
                             <div class="text-slate-300">ยอดชำระสุทธิ (คอร์ส {{ selectedCourse?.title }})</div>
                             <div class="text-3xl font-extrabold text-white">฿{{ selectedCourse?.price }}</div>
                         </div>
-
                         <div>
                             <label class="block text-sm font-bold text-slate-200 mb-3">แนบหลักฐานการโอนเงิน (สลิป) *</label>
                             <input required type="file" accept="image/*" @change="handleFileChange" class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white" />
                             <p class="text-xs text-slate-400 mt-2">รองรับไฟล์ภาพขนาดไม่เกิน 5MB</p>
                         </div>
                     </div>
-                    
                     <div class="p-4 bg-gray-50 border-t border-gray-200">
                         <button type="submit" :disabled="isSubmitting || !slipFileName" :class="['w-full py-4 text-white font-bold rounded-xl text-lg transition shadow-lg flex items-center justify-center gap-2', isSubmitting ? 'bg-blue-400 cursor-wait' : (!slipFileName ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700')]">
                             <div v-if="isSubmitting" class="spinner"></div> 
@@ -280,15 +245,13 @@
             </div>
         </main>
 
-        <!-- View: Admin Dashboard (หลังบ้าน) -->
+        <!-- View: Admin Dashboard -->
         <main v-if="currentView === 'admin'" class="min-h-screen bg-gray-100">
             <header class="bg-gray-900 text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-30">
                 <div class="font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> System Admin Dashboard</div>
                 <button @click="setView('home'); isAdminAuthenticated = false" class="text-sm hover:text-gray-300 flex items-center gap-1"><i class="fa-solid fa-house"></i> กลับหน้าร้าน</button>
             </header>
-
             <div class="p-6 max-w-7xl mx-auto">
-                <!-- ส่วนล็อกอินแอดมิน -->
                 <div v-if="!isAdminAuthenticated" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md mt-10">
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-lock text-3xl"></i></div>
@@ -304,14 +267,11 @@
                         </button>
                     </form>
                 </div>
-
-                <!-- ส่วนแสดงตารางข้อมูลคนสมัครจริง -->
                 <div v-else>
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-bold text-gray-800">รายชื่อผู้สมัครล่าสุด</h1>
                         <button @click="handleAdminLogin" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
                     </div>
-                    
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
                         <table class="w-full text-sm text-left whitespace-nowrap">
                             <thead class="text-xs text-gray-600 uppercase bg-gray-50 border-b border-gray-200">
@@ -326,21 +286,18 @@
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                                 <tr v-for="(row, idx) in adminData" :key="idx" class="hover:bg-blue-50/50 transition">
-                                    <td class="px-6 py-4 text-gray-500">{{ row['วันที่-เวลา'] || '-' }}</td>
-                                    <td class="px-6 py-4 font-bold text-gray-800">{{ row['คอร์สที่สมัคร'] || '-' }}</td>
-                                    <td class="px-6 py-4 font-medium text-blue-600">{{ row['ชื่อน้อง'] || '-' }}</td>
-                                    <td class="px-6 py-4">{{ row['ชื่อผู้ปกครอง'] || '-' }}</td>
-                                    <td class="px-6 py-4">{{ row['เบอร์โทร'] || '-' }}</td>
+                                    <td class="px-6 py-4 text-gray-500">{{ row['Timestamp'] || '-' }}</td>
+                                    <td class="px-6 py-4 font-bold text-gray-800">{{ row['CourseName'] || '-' }}</td>
+                                    <td class="px-6 py-4 font-medium text-blue-600">{{ row['StudentFullName'] || '-' }}</td>
+                                    <td class="px-6 py-4">{{ (row['ParentFirstName'] || '') + ' ' + (row['ParentLastName'] || '') }}</td>
+                                    <td class="px-6 py-4">{{ row['Phone'] || '-' }}</td>
                                     <td class="px-6 py-4 text-center">
-                                        <a v-if="row['ลิงก์สลิปโอนเงิน']" :href="row['ลิงก์สลิปโอนเงิน']" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-blue-100 transition"><i class="fa-solid fa-image"></i> ดูสลิป</a>
+                                        <a v-if="row['SlipURL']" :href="row['SlipURL']" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-blue-100 transition"><i class="fa-solid fa-image"></i> ดูสลิป</a>
                                         <span v-else class="text-gray-400">-</span>
                                     </td>
                                 </tr>
                                 <tr v-if="adminData.length === 0">
-                                    <td colspan="6" class="text-center py-12 text-gray-500">
-                                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300 block"></i>
-                                        ยังไม่มีข้อมูลผู้สมัครในระบบ
-                                    </td>
+                                    <td colspan="6" class="text-center py-12 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300 block"></i>ยังไม่มีข้อมูลผู้สมัครในระบบ</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -366,19 +323,16 @@
                 const slipMimeType = ref('');
                 const slipBase64 = ref('');
 
-             const formData = reactive({
-    parentFirstName: '', parentLastName: '', email: '', phone: '',
-    studentFullName: '', childAge: '', studentClass: '', schoolName: ''
-});
+                const formData = reactive({
+                    parentFirstName: '', parentLastName: '', email: '', phone: '',
+                    studentFullName: '', childAge: '', studentClass: '', schoolName: ''
                 });
 
-                // ตัวแปรส่วนแอดมิน
                 const isAdminAuthenticated = ref(false);
                 const isAdminLoading = ref(false);
                 const adminPassword = ref('');
                 const adminData = ref([]);
 
-                // ลิงก์ API Google Apps Script 
                 const API_URL = 'https://script.google.com/macros/s/AKfycbzeRoejIvAWZnA4uPdV_43eGuxhWyve6TpVkh3lAU7v_0iJ8Qwplxl7mPSre4x2BlPD/exec';
 
                 onMounted(() => {
@@ -427,6 +381,7 @@
                         phone: formData.phone,
                         studentFullName: formData.studentFullName,
                         childAge: formData.childAge,
+                        studentClass: formData.studentClass || '-',
                         schoolName: formData.schoolName || '-',
                         slipFileName: slipFileName.value,
                         slipMimeType: slipMimeType.value,
@@ -451,7 +406,6 @@
                     Object.keys(formData).forEach(key => formData[key] = '');
                 };
 
-                // ฟังก์ชันล็อกอินและดึงข้อมูลหลังบ้านสำหรับ Admin
                 const handleAdminLogin = () => {
                     if (!adminPassword.value) { alert('กรุณากรอกรหัสผ่าน'); return; }
                     isAdminLoading.value = true;
@@ -462,7 +416,7 @@
                         isAdminLoading.value = false;
                         if (data.result === 'success') {
                             isAdminAuthenticated.value = true;
-                            adminData.value = data.data; // เอาข้อมูลจาก Sheet มาใส่ตาราง
+                            adminData.value = data.data;
                         } else {
                             alert('เข้าสู่ระบบไม่สำเร็จ: ' + data.message);
                         }
