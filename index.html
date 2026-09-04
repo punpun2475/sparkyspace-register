@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sparky Space ลานสนุกคิด - คอร์สเรียนออนไลน์</title>
+    <title>SPC Sparky Space ลานสนุกคิด - คอร์สเรียนออนไลน์</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,7 @@
 <body class="text-gray-800 antialiased selection:bg-blue-200">
     <div id="app" v-cloak>
         
-        <!-- Header -->
+       <!-- Header & Banner -->
         <header v-if="currentView !== 'admin'" class="bg-white border-b sticky top-0 z-40 shadow-sm">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2 font-bold text-xl text-blue-600 cursor-pointer" @click="setView('home')">
@@ -39,11 +39,15 @@
         <main v-if="currentView === 'home'" class="bg-slate-50 min-h-screen pb-12 flex flex-col">
             <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white py-16 px-4 text-center shadow-md">
                 <div class="max-w-3xl mx-auto flex flex-col items-center">
+                    <!-- โลโก้ใหม่จากลิงก์ของคุณ -->
                     <div class="bg-white rounded-full mb-4 shadow-lg w-20 h-20 flex items-center justify-center overflow-hidden border-2 border-white p-0">
                         <img src="https://github.com/punpun2475/picture/blob/main/ST%20(3).PNG?raw=true" alt="Logo" class="w-full h-full object-cover">
                     </div>
+                    
                     <h1 class="text-3xl md:text-5xl font-extrabold mb-3">SPC Sparky Space ลานสนุกคิด</h1>
                     <p class="text-lg md:text-xl text-blue-100 mb-4">เปลี่ยนเวลาว่าง ให้เป็นประสบการณ์ที่ลูกจะจดจำ สนุก ได้ความรู้ และลงมือทำจริง!</p>
+                    
+                    <!-- บรรทัดที่สาม -->
                     <div class="text-sm md:text-base text-blue-100 font-medium bg-blue-800/40 px-4 py-1.5 rounded-full border border-blue-400/40 backdrop-blur-sm">
                         <i class="fa-solid fa-school mr-1"></i> จัดอบรมโดย โรงเรียนเซนต์ปอลคอนแวนต์
                     </div>
@@ -90,7 +94,7 @@
             </div>
             
             <footer class="bg-white border-t mt-12 py-6 text-center text-sm text-gray-400 flex flex-col items-center gap-2">
-                <p>&copy; 2026 POMMY@St.Paul. All rights reserved.</p>
+                 <p>&copy; 2026 พัฒนาระบบโดย POMMY@St.Paul</p>
                 <button @click="setView('admin')" class="text-gray-300 hover:text-gray-500 transition" title="ระบบจัดการหลังบ้าน"><i class="fa-solid fa-lock"></i></button>
             </footer>
         </main>
@@ -205,17 +209,32 @@
                     </div>
 
                     <!-- Payment Section -->
-                    <div class="bg-slate-800 p-6 md:p-8 text-white relative overflow-hidden">
+                    <div class="bg-slate-900 p-6 md:p-8 text-white relative overflow-hidden">
                         <h3 class="font-bold text-xl flex items-center gap-2 mb-6"><i class="fa-regular fa-credit-card text-yellow-400"></i> ข้อมูลการชำระเงิน</h3>
-                        <div class="bg-slate-700/50 p-5 rounded-xl border border-slate-600 mb-6 backdrop-blur-sm">
-                            <div class="text-sm text-slate-300 font-medium mb-3 uppercase tracking-wide">โอนเงินเข้าบัญชี</div>
-                            <div class="flex flex-col gap-3">
-                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xs">KBANK</div> <span class="text-lg">ธนาคารกสิกรไทย</span></div>
-                                <div class="flex items-center gap-3"><i class="fa-solid fa-hashtag text-slate-400"></i> <span class="font-mono text-xl tracking-wider text-yellow-300">123-4-56789-0</span></div>
-                                <div class="flex items-center gap-3"><i class="fa-solid fa-user text-slate-400"></i> <span>บริษัท สปาร์คกี้ คิดส์ จำกัด</span></div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-6">
+                            <!-- Bank Details -->
+                            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 backdrop-blur-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">โอนเงินเข้าบัญชี</div>
+                                    <div class="flex flex-col gap-3">
+                                        <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-gray-900 font-bold text-xs">BAY</div> <span class="text-lg">ธนาคารกรุงศรีอยุธยา</span></div>
+                                        <div class="flex items-center gap-3"><i class="fa-solid fa-hashtag text-slate-400"></i> <span class="font-mono text-xl tracking-wider text-yellow-300 font-bold">278-1-44182-3</span></div>
+                                        <div class="flex items-center gap-3"><i class="fa-solid fa-user text-slate-400"></i> <span class="text-sm">โรงเรียนเซนต์ปอลคอนแวนต์</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- QR Code -->
+                            <div class="bg-white p-4 rounded-xl flex flex-col items-center justify-center text-center shadow-md">
+                                <p class="text-xs font-bold text-gray-700 mb-2">สแกน QR Code เพื่อชำระเงิน</p>
+                                <div class="w-40 h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
+                                    <img src="https://github.com/punpun2475/picture/blob/main/Screenshot%202026-09-04%20084458.jpg?raw=true" alt="QR Code Payment" class="w-full h-full object-cover">
+                                </div>
                             </div>
                         </div>
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-700">
+
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
                             <div class="text-slate-300">ยอดชำระสุทธิ (คอร์ส {{ selectedCourse?.title }})</div>
                             <div class="text-3xl font-extrabold text-white">฿{{ selectedCourse?.price }}</div>
                         </div>
@@ -248,7 +267,7 @@
             </div>
         </main>
 
-        <!-- View: Admin Dashboard -->
+        <!-- View: Admin Dashboard (หลังบ้านแบบแสดงข้อมูลครบถ้วนทุกช่อง) -->
         <main v-if="currentView === 'admin'" class="min-h-screen bg-gray-100">
             <header class="bg-gray-900 text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-30">
                 <div class="font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> System Admin Dashboard</div>
