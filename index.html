@@ -208,38 +208,26 @@
                         </div>
                     </div>
 
-                  <!-- Payment Section -->
+               <!-- Payment Section -->
                     <div class="bg-slate-900 p-6 md:p-8 text-white relative overflow-hidden">
                         <h3 class="font-bold text-xl flex items-center gap-2 mb-6"><i class="fa-regular fa-credit-card text-yellow-400"></i> ข้อมูลการชำระเงิน</h3>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-6">
-                            <!-- Bank Details -->
-                            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 backdrop-blur-sm h-full flex flex-col justify-between">
-                                <div>
-                                    <div class="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">โอนเงินเข้าบัญชี</div>
-                                    <div class="flex flex-col gap-3">
-                                        <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-gray-900 font-bold text-xs">BAY</div> <span class="text-lg">ธนาคารกรุงศรีอยุธยา</span></div>
-                                        <div class="flex items-center gap-3"><i class="fa-solid fa-hashtag text-slate-400"></i> <span class="font-mono text-xl tracking-wider text-yellow-300 font-bold">278-1-44182-3</span></div>
-                                        <div class="flex items-center gap-3"><i class="fa-solid fa-user text-slate-400"></i> <span class="text-sm">โรงเรียนเซนต์ปอลคอนแวนต์</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- QR Code -->
-                            <div class="bg-white p-4 rounded-xl flex flex-col items-center justify-center text-center shadow-md">
-                                <p class="text-xs font-bold text-gray-700 mb-2">สแกน QR Code เพื่อชำระเงิน</p>
-                                <div class="w-40 h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                                    <img src="https://github.com/punpun2475/picture/blob/main/Screenshot%202026-09-04%20084458.jpg?raw=true" alt="QR Code Payment" class="w-full h-full object-cover">
-                                </div>
+                        <!-- Bank Details (Full Width) -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 backdrop-blur-sm mb-6 shadow-md">
+                            <div class="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">โอนเงินเข้าบัญชี</div>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-gray-900 font-bold text-xs">BAY</div> <span class="text-lg">ธนาคารกรุงศรีอยุธยา</span></div>
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-hashtag text-slate-400"></i> <span class="font-mono text-2xl tracking-wider text-yellow-300 font-bold">278-1-44182-3</span></div>
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-user text-slate-400"></i> <span class="text-base text-slate-200 font-medium">โรงเรียนเซนต์ปอลคอนแวนต์</span></div>
                             </div>
                         </div>
 
-                        <!-- 🌟 เพิ่มกล่องข้อความแนะนำการพิมพ์บันทึกช่วยจำตรงนี้ -->
-                        <div class="bg-blue-600/30 border border-blue-400/50 p-4 rounded-xl mb-6 flex items-start gap-3">
-                            <i class="fa-solid fa-circle-info text-blue-300 text-lg mt-0.5"></i>
-                            <div class="text-sm text-blue-100">
-                                <span class="font-bold text-white block mb-1">📌 ข้อ 1 สำคัญมาก:</span>
-                                กรุณาพิมพ์ <strong>"ชื่อ-นามสกุลน้อง"</strong> ในช่อง <strong>บันทึกช่วยจำ (Memo)</strong> ของแอปธนาคารทุกครั้ง เพื่อความรวดเร็วในการตรวจสอบยอดเงินครับ
+                        <!-- คำเตือนตัวหนังสือสีแดง -->
+                        <div class="bg-red-500/10 border-2 border-red-500 p-4 rounded-xl mb-6 flex items-start gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl mt-0.5"></i>
+                            <div class="text-sm text-red-200">
+                                <strong class="text-red-400 block text-base mb-1">คำเตือนสำคัญมาก:</strong>
+                                กรุณาพิมพ์ <strong class="text-white underline">"ชื่อ-นามสกุลน้อง"</strong> ลงในช่อง <strong class="text-white">บันทึกช่วยจำ (Memo)</strong> ของแอปพลิเคชันธนาคารทุกครั้งก่อนกดยืนยันการโอนเงิน เพื่อให้ระบบตรวจสอบยอดเงินได้อย่างถูกต้องรวดเร็ว
                             </div>
                         </div>
 
