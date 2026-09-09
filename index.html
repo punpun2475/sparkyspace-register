@@ -29,8 +29,8 @@
                     <span>SPC Sparky Space ลานสนุกคิด</span>
                 </div>
                 <div class="hidden md:flex gap-6 text-sm text-gray-600">
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-phone text-blue-500"></i> 089-079-8465</div>
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-envelope text-blue-500"></i> sirirat.i@sp.ac.th</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-phone text-blue-500"></i> 096-971-2098</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-envelope text-blue-500"></i> hello@sparkyspace.com</div>
                 </div>
             </div>
         </header>
@@ -39,7 +39,6 @@
         <main v-if="currentView === 'home'" class="bg-slate-50 min-h-screen pb-12 flex flex-col">
             <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white py-16 px-4 text-center shadow-md">
                 <div class="max-w-3xl mx-auto flex flex-col items-center">
-                    <!-- โลโก้ใหม่จากลิงก์ของคุณ -->
                     <div class="bg-white rounded-full mb-4 shadow-lg w-20 h-20 flex items-center justify-center overflow-hidden border-2 border-white p-0">
                         <img src="https://github.com/punpun2475/picture/blob/main/ST%20(3).PNG?raw=true" alt="Logo" class="w-full h-full object-cover">
                     </div>
@@ -47,7 +46,6 @@
                     <h1 class="text-3xl md:text-5xl font-extrabold mb-3">SPC Sparky Space ลานสนุกคิด</h1>
                     <p class="text-lg md:text-xl text-blue-100 mb-4">เปลี่ยนเวลาว่าง ให้เป็นประสบการณ์ที่ลูกจะจดจำ สนุก ได้ความรู้ และลงมือทำจริง!</p>
                     
-                    <!-- บรรทัดที่สาม -->
                     <div class="text-sm md:text-base text-blue-100 font-medium bg-blue-800/40 px-4 py-1.5 rounded-full border border-blue-400/40 backdrop-blur-sm">
                         <i class="fa-solid fa-school mr-1"></i> จัดอบรมโดย โรงเรียนเซนต์ปอลคอนแวนต์
                     </div>
@@ -208,11 +206,10 @@
                         </div>
                     </div>
 
-               <!-- Payment Section -->
+                    <!-- Payment Section -->
                     <div class="bg-slate-900 p-6 md:p-8 text-white relative overflow-hidden">
                         <h3 class="font-bold text-xl flex items-center gap-2 mb-6"><i class="fa-regular fa-credit-card text-yellow-400"></i> ข้อมูลการชำระเงิน</h3>
                         
-                        <!-- Bank Details (Full Width) -->
                         <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 backdrop-blur-sm mb-6 shadow-md">
                             <div class="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">โอนเงินเข้าบัญชี</div>
                             <div class="flex flex-col gap-3">
@@ -222,7 +219,6 @@
                             </div>
                         </div>
 
-                        <!-- คำเตือนตัวหนังสือสีแดง -->
                         <div class="bg-red-500/10 border-2 border-red-500 p-4 rounded-xl mb-6 flex items-start gap-3">
                             <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl mt-0.5"></i>
                             <div class="text-sm text-red-200">
@@ -264,7 +260,7 @@
             </div>
         </main>
 
-        <!-- View: Admin Dashboard (หลังบ้านแบบแสดงข้อมูลครบถ้วนทุกช่อง) -->
+        <!-- View: Admin Dashboard -->
         <main v-if="currentView === 'admin'" class="min-h-screen bg-gray-100">
             <header class="bg-gray-900 text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-30">
                 <div class="font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> System Admin Dashboard</div>
@@ -275,7 +271,7 @@
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-lock text-3xl"></i></div>
                         <h2 class="text-2xl font-bold">เข้าสู่ระบบหลังบ้าน</h2>
-                        <p class="text-sm text-gray-500 mt-1">กรุณายืนยันตัวตน </p>
+                        <p class="text-sm text-gray-500 mt-1">กรุณายืนยันตัวตน (รหัสผ่าน: admin123)</p>
                     </div>
                     <form @submit.prevent="handleAdminLogin" class="space-y-4">
                         <input type="password" v-model="adminPassword" placeholder="รหัสผ่าน" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
@@ -369,7 +365,11 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.result === 'success' && data.data) {
-                                courses.value = data.data; 
+                                // 🌟 กรองเฉพาะคอร์สที่ isActive เป็น TRUE เท่านั้น
+                                courses.value = data.data.filter(course => {
+                                    let active = String(course.isActive).trim().toLowerCase();
+                                    return active === 'true' || active === '1' || active === 'yes';
+                                });
                             }
                             isLoading.value = false;
                         })
