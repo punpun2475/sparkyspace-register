@@ -67,10 +67,20 @@
                         <div class="aspect-[4/5] overflow-hidden relative bg-gray-100">
                             <img v-if="course.image" :src="course.image" :alt="course.title" class="w-full h-full object-cover object-top" />
                             <div v-else class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-regular fa-image text-5xl"></i></div>
+                            
+                            <!-- ป้ายราคา หรือ ป้ายเตือนกรณีเต็ม -->
                             <div class="absolute top-3 right-3 bg-white/95 backdrop-blur text-blue-600 font-bold px-3 py-1 rounded-full text-sm shadow-sm border border-blue-100">
                                 ฿{{ course.price }}
                             </div>
+
+                            <!-- ป้ายบอกสถานะเต็มบนรูป (ถ้ามีคำว่า เต็ม หรือ ปิด) -->
+                            <div v-if="isCourseFull(course)" class="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center">
+                                <span class="bg-red-600 text-white font-extrabold px-4 py-2 rounded-xl text-lg shadow-lg rotate-[-5deg]">
+                                    <i class="fa-solid fa-ban mr-1"></i> คอร์สเต็ม / ปิดรับสมัคร
+                                </span>
+                            </div>
                         </div>
+
                         <div class="p-5 flex flex-col flex-1">
                             <h3 class="text-lg font-bold text-gray-800 mb-1">{{ course.title }}</h3>
                             <p class="text-sm text-gray-500 mb-4 line-clamp-2 h-10">{{ course.subtitle || course.description || '' }}</p>
@@ -79,7 +89,9 @@
                                 <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fa-regular fa-clock text-gray-400"></i> {{ course.duration || 'ไม่ระบุเวลา' }}</div>
                                 <div v-if="course.date || course.spotsLeft" class="flex items-center justify-between text-sm text-gray-600">
                                     <div class="flex items-center gap-2" v-if="course.date"><i class="fa-regular fa-calendar text-gray-400"></i> เริ่ม {{ course.date }}</div>
-                                    <span v-if="course.spotsLeft" class="text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded text-xs">{{ course.spotsLeft }}</span>
+                                    <span :class="['font-medium px-2 py-0.5 rounded text-xs', isCourseFull(course) ? 'bg-red-100 text-red-600 font-bold' : 'bg-blue-50 text-blue-600']">
+                                        {{ course.spotsLeft || 'ไม่จำกัด' }}
+                                    </span>
                                 </div>
                             </div>
                             
@@ -123,7 +135,7 @@
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>ระยะเวลา:</span> <span class="font-bold">{{ selectedCourse.duration || '-' }}</span></li>
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>วันที่เรียน:</span> <span class="font-bold">{{ selectedCourse.date || '-' }}</span></li>
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>เวลา:</span> <span class="font-bold">{{ selectedCourse.time || selectedCourse.Time || '-' }}</span></li>
-                                <li class="flex justify-between items-center bg-blue-50 p-2.5 rounded-lg text-blue-700"><span>ที่นั่งคงเหลือ:</span> <span class="font-bold">{{ selectedCourse.spotsLeft || 'ไม่จำกัด' }}</span></li>
+                                <li class="flex justify-between items-center bg-blue-50 p-2.5 rounded-lg text-blue-700"><span>สถานะที่นั่ง:</span> <span class="font-bold">{{ selectedCourse.spotsLeft || 'ไม่จำกัด' }}</span></li>
                             </ul>
 
                             <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-star text-yellow-500"></i> จุดเด่นคอร์สนี้</h3>
@@ -153,7 +165,12 @@
                 </div>
                 <div class="p-4 border-t bg-white rounded-b-2xl flex gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10">
                     <button @click="showModal = false" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">ปิด</button>
-                    <button @click="proceedToCheckout" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
+                    
+                    <!-- ปุ่มสมัคร: ถ้าคอร์สเต็มจะถูกปิดการใช้งานและเปลี่ยนเป็นสีเทา -->
+                    <button v-if="isCourseFull(selectedCourse)" disabled class="flex-1 py-3 bg-gray-300 text-gray-500 font-bold rounded-xl cursor-not-allowed shadow-none flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-ban"></i> คอร์สเต็ม / ปิดรับสมัคร
+                    </button>
+                    <button v-else @click="proceedToCheckout" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
                         สมัครเรียนคอร์สนี้ <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
@@ -365,11 +382,8 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.result === 'success' && data.data) {
-                                // 🌟 กรองเฉพาะคอร์สที่ isActive เป็น TRUE เท่านั้น
-                                courses.value = data.data.filter(course => {
-                                    let active = String(course.isActive).trim().toLowerCase();
-                                    return active === 'true' || active === '1' || active === 'yes';
-                                });
+                                // โหลดทุกคอร์สมาแสดง (ไม่ซ่อนคอร์สที่เต็มแล้ว)
+                                courses.value = data.data; 
                             }
                             isLoading.value = false;
                         })
@@ -378,9 +392,18 @@
                         });
                 });
 
+                // ฟังก์ชันเช็คว่าคอร์สนี้เต็มหรือยัง (ดูจากคำในช่อง spotsLeft หรือ isActive)
+                const isCourseFull = (course) => {
+                    if (!course) return false;
+                    let spots = String(course.spotsLeft || '').toLowerCase();
+                    let active = String(course.isActive || '').toLowerCase();
+                    
+                    return spots.includes('เต็ม') || spots.includes('ปิด') || active === 'false' || active === '0' || active === 'no';
+                };
+
                 const setView = (view) => { currentView.value = view; window.scrollTo(0,0); };
                 const openCourseDetails = (course) => { selectedCourse.value = course; showModal.value = true; };
-                const proceedToCheckout = () => { showModal.value = false; setView('checkout'); };
+                const proceedToCheckout = () => { if (!isCourseFull(selectedCourse.value)) { showModal.value = false; setView('checkout'); } };
 
                 const handleFileChange = (e) => {
                     const file = e.target.files[0];
@@ -460,7 +483,7 @@
                 return {
                     currentView, courses, isLoading, selectedCourse, showModal, isSubmitting, slipFileName, formData,
                     isAdminAuthenticated, isAdminLoading, adminPassword, adminData,
-                    setView, openCourseDetails, proceedToCheckout, handleFileChange, handleSubmit, resetApp, handleAdminLogin
+                    isCourseFull, setView, openCourseDetails, proceedToCheckout, handleFileChange, handleSubmit, resetApp, handleAdminLogin
                 };
             }
         }).mount('#app');
