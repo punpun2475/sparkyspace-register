@@ -135,6 +135,7 @@
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>ระยะเวลา:</span> <span class="font-bold">{{ selectedCourse.duration || '-' }}</span></li>
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>วันที่เรียน:</span> <span class="font-bold">{{ selectedCourse.date || '-' }}</span></li>
                                 <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>เวลา:</span> <span class="font-bold">{{ selectedCourse.time || selectedCourse.Time || '-' }}</span></li>
+                                <li class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg"><span>สถานที่:</span> <span class="font-bold text-blue-600">{{ selectedCourse.location || 'โรงเรียนเซนต์ปอลคอนแวนต์' }}</span></li>
                                 <li class="flex justify-between items-center bg-blue-50 p-2.5 rounded-lg text-blue-700"><span>สถานะที่นั่ง:</span> <span class="font-bold">{{ selectedCourse.spotsLeft || 'ไม่จำกัด' }}</span></li>
                             </ul>
 
@@ -433,6 +434,7 @@
                         email: formData.email,
                         phone: formData.phone,
                         studentFullName: formData.studentFullName,
+                        location: selectedCourse.value.location || '-', // 🌟 เพิ่มบรรทัดนี้
                         childAge: formData.childAge,
                         studentClass: formData.studentClass || '-',
                         schoolName: formData.schoolName || '-',
