@@ -68,12 +68,10 @@
                             <img v-if="course.image" :src="course.image" :alt="course.title" class="w-full h-full object-cover object-top" />
                             <div v-else class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-regular fa-image text-5xl"></i></div>
                             
-                            <!-- ป้ายราคา หรือ ป้ายเตือนกรณีเต็ม -->
                             <div class="absolute top-3 right-3 bg-white/95 backdrop-blur text-blue-600 font-bold px-3 py-1 rounded-full text-sm shadow-sm border border-blue-100">
                                 ฿{{ course.price }}
                             </div>
 
-                            <!-- ป้ายบอกสถานะเต็มบนรูป (ถ้ามีคำว่า เต็ม หรือ ปิด) -->
                             <div v-if="isCourseFull(course)" class="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center">
                                 <span class="bg-red-600 text-white font-extrabold px-4 py-2 rounded-xl text-lg shadow-lg rotate-[-5deg]">
                                     <i class="fa-solid fa-ban mr-1"></i> คอร์สเต็ม / ปิดรับสมัคร
@@ -167,7 +165,6 @@
                 <div class="p-4 border-t bg-white rounded-b-2xl flex gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10">
                     <button @click="showModal = false" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">ปิด</button>
                     
-                    <!-- ปุ่มสมัคร: ถ้าคอร์สเต็มจะถูกปิดการใช้งานและเปลี่ยนเป็นสีเทา -->
                     <button v-if="isCourseFull(selectedCourse)" disabled class="flex-1 py-3 bg-gray-300 text-gray-500 font-bold rounded-xl cursor-not-allowed shadow-none flex items-center justify-center gap-2">
                         <i class="fa-solid fa-ban"></i> คอร์สเต็ม / ปิดรับสมัคร
                     </button>
@@ -301,9 +298,17 @@
                     </form>
                 </div>
                 <div v-else>
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-bold text-gray-800">รายชื่อผู้สมัครทั้งหมด</h1>
-                        <button @click="handleAdminLogin" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50 shadow-sm"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                        <h1 class="text-2xl font-bold text-gray-800">รายชื่อผู้สมัครทั้งหมด ({{ adminData.length }} คน)</h1>
+                        <div class="flex gap-3">
+                            <!-- 🌟 ปุ่มดาวน์โหลด CSV -->
+                            <button @click="downloadCSV" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-download"></i> ดาวน์โหลดรายชื่อ (CSV)
+                            </button>
+                            <button @click="handleAdminLogin" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล
+                            </button>
+                        </div>
                     </div>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
                         <table class="w-full text-sm text-left whitespace-nowrap">
@@ -383,7 +388,6 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.result === 'success' && data.data) {
-                                // โหลดทุกคอร์สมาแสดง (ไม่ซ่อนคอร์สที่เต็มแล้ว)
                                 courses.value = data.data; 
                             }
                             isLoading.value = false;
@@ -393,7 +397,6 @@
                         });
                 });
 
-                // ฟังก์ชันเช็คว่าคอร์สนี้เต็มหรือยัง (ดูจากคำในช่อง spotsLeft หรือ isActive)
                 const isCourseFull = (course) => {
                     if (!course) return false;
                     let spots = String(course.spotsLeft || '').toLowerCase();
@@ -406,11 +409,10 @@
                 const openCourseDetails = (course) => { selectedCourse.value = course; showModal.value = true; };
                 const proceedToCheckout = () => { if (!isCourseFull(selectedCourse.value)) { showModal.value = false; setView('checkout'); } };
 
-                const handleFileChange = (e) => {
-                    const file = e.target.files[0];
+                const handleFileGroup = (file) => {
                     if (file) {
                         if (file.size > 5 * 1024 * 1024) {
-                            alert('ไฟล์มีขนาดใหญ่เกิน 5MB กรุณาเลือกไฟล์ที่เล็กลง'); e.target.value = null; return;
+                            alert('ไฟล์มีขนาดใหญ่เกิน 5MB กรุณาเลือกไฟล์ที่เล็กลง'); return;
                         }
                         slipFileName.value = file.name;
                         slipMimeType.value = file.type;
@@ -419,6 +421,10 @@
                         reader.onload = (event) => { slipBase64.value = event.target.result.split(',')[1]; };
                         reader.readAsDataURL(file);
                     }
+                };
+
+                const handleFileChange = (e) => {
+                    handleFileGroup(e.target.files[0]);
                 };
 
                 const handleSubmit = () => {
@@ -434,7 +440,7 @@
                         email: formData.email,
                         phone: formData.phone,
                         studentFullName: formData.studentFullName,
-                        location: selectedCourse.value.location || '-', // 🌟 เพิ่มบรรทัดนี้
+                        location: selectedCourse.value.location || '-',
                         childAge: formData.childAge,
                         studentClass: formData.studentClass || '-',
                         schoolName: formData.schoolName || '-',
@@ -482,10 +488,41 @@
                     });
                 };
 
+                // 🌟 ฟังก์ชันดาวน์โหลดรายชื่อผู้สมัครเป็นไฟล์ CSV (เปิดใน Excel ได้ทันที)
+                const downloadCSV = () => {
+                    if (!adminData.value || adminData.value.length === 0) {
+                        alert('ไม่มีข้อมูลรายชื่อผู้สมัครสำหรับดาวน์โหลด');
+                        return;
+                    }
+
+                    // กำหนดหัวตาราง CSV
+                    const headers = ["Timestamp", "CourseName", "ParentFirstName", "ParentLastName", "Email", "Phone", "StudentFullName", "ChildAge", "StudentClass", "SchoolName", "SlipURL"];
+                    let csvContent = "\uFEFF" + headers.join(",") + "\n"; // ใส่ BOM (\uFEFF) เพื่อให้ Excel อ่านภาษาไทยออกไม่เป็นภาษาต่างดาว
+
+                    adminData.value.forEach(row => {
+                        let values = headers.map(header => {
+                            let val = row[header] !== undefined && row[header] !== null ? String(row[header]) : "";
+                            // ครอบเครื่องหมายคำพูดเผื่อมีคอมม่าในข้อมูล
+                            return `"${val.replace(/"/g, '""')}"`;
+                        });
+                        csvContent += values.join(",") + "\n";
+                    });
+
+                    // สร้างลิงก์จำลองเพื่อดาวน์โหลดไฟล์
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", `SPC_Sparky_Space_Registrations_${new Date().toISOString().slice(0,10)}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+
                 return {
                     currentView, courses, isLoading, selectedCourse, showModal, isSubmitting, slipFileName, formData,
                     isAdminAuthenticated, isAdminLoading, adminPassword, adminData,
-                    isCourseFull, setView, openCourseDetails, proceedToCheckout, handleFileChange, handleSubmit, resetApp, handleAdminLogin
+                    isCourseFull, setView, openCourseDetails, proceedToCheckout, handleFileChange, handleSubmit, resetApp, handleAdminLogin, downloadCSV
                 };
             }
         }).mount('#app');
